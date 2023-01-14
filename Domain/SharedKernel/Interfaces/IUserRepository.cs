@@ -3,7 +3,8 @@
 namespace Domain.SharedKernel.Interfaces;
 public interface IUserRepository
 {
-    Task<List<User>> GetUsersRepositoryAsync(int page, int perPage, string sortBy, string search);
+    Task<List<User>> GetUsersWithoutFiltersRepositoryAsync();
+    Task<(List<User>, int)> GetUsersWithFiltersRepositoryAsync(int page, int perPage, string sortBy, string search);
 
     Task<User> GetUserByIdRepositoryAsync(Guid id);
 

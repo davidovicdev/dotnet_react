@@ -36,10 +36,9 @@ public class UserService : IUserService
         };
         return userMapped;
     }
-
-    public async Task<UsersDTO> GetUsersServiceAsync(FiltersDTO filters)
+    public async Task<List<UserDTO>> GetUsersWithoutFiltersServiceAsync()
     {
-        List<User> usersFromRepository = await _userRepository.GetUsersRepositoryAsync(filters.Page, filters.PerPage, filters.SortBy, filters.Search);
+        List<User> usersFromRepository = await _userRepository.GetUsersWithoutFiltersRepositoryAsync();
         List<UserDTO> users = new();
         foreach (var user in usersFromRepository)
         {
@@ -65,6 +64,40 @@ public class UserService : IUserService
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Posts = posts
+            });
+        }
+        return users;
+    }
+    public async Task<UsersDTO> GetUsersWithFiltersServiceAsync(FiltersDTO filters)
+    {
+        var response = await _userRepository.GetUsersWithFiltersRepositoryAsync(filters.Page, filters.PerPage, filters.SortBy, filters.Search);
+        filters.PageCount = response.Item2;
+        List<User> usersFromRepository = response.Item1;
+        List<UserDTO> users = new();
+        foreach (var user in usersFromRepository)
+        {
+            List<PostDTO> posts = new();
+            foreach (var post in user.Posts)
+            {
+                posts.Add(new PostDTO()
+                {
+                    Id = post.Id,
+                    Title = post.Title,
+                    Body = post.Body,
+                    User = new UserDTO()
+                    {
+                        Id = user.Id,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                    },
+                });
+            }
+            users.Add(new UserDTO()
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Posts = posts,
             });
         }
         UsersDTO output = new()
@@ -99,4 +132,6 @@ public class UserService : IUserService
     {
         await _userRepository.DeleteUserRepositoryAsync(id);
     }
+
+
 }

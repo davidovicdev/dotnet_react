@@ -15,7 +15,9 @@ public class PostsController : BaseController
         _postService = postService;
     }
     [HttpGet]
-    public async Task<ActionResult> GetPostsAsync([FromQuery] FiltersDTO filters) => Ok(await _postService.GetPostsServiceAsync(filters));
+    public async Task<ActionResult> GetPostsWithoutFiltersAsync() => Ok(await _postService.GetPostsWithoutFiltersServiceAsync());
+    [HttpGet("/api/[controller]Filters")]
+    public async Task<ActionResult> GetPostsWithFiltersAsync([FromQuery] FiltersDTO filters) => Ok(await _postService.GetPostsWithFiltersServiceAsync(filters));
 
     [HttpGet("/api/[controller]/{id}")]
     public async Task<ActionResult> GetPostByIdAsync(Guid id) => Ok(await _postService.GetPostByIdServiceAsync(id));

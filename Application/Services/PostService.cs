@@ -34,10 +34,34 @@ public class PostService : IPostService
         };
         return mappedPost;
     }
-
-    public async Task<PostsDTO> GetPostsServiceAsync(FiltersDTO filters)
+    public async Task<List<PostDTO>> GetPostsWithoutFiltersServiceAsync()
     {
-        var posts = await _postRepository.GetPostsRepositoryAsync(filters.Page, filters.PerPage, filters.SortBy, filters.Search);
+        var posts = await _postRepository.GetPostsWithoutFiltersRepositoryAsync();
+        List<PostDTO> mappedPosts = new();
+        foreach (var post in posts)
+        {
+            UserDTO mappedUser = new()
+            {
+                Id = post.User.Id,
+                FirstName = post.User.FirstName,
+                LastName = post.User.LastName,
+            };
+            mappedPosts.Add(new PostDTO()
+            {
+                Id = post.Id,
+                Body = post.Body,
+                Title = post.Title,
+                User = mappedUser
+            });
+        }
+
+        return mappedPosts;
+    }
+    public async Task<PostsDTO> GetPostsWithFiltersServiceAsync(FiltersDTO filters)
+    {
+        var response = await _postRepository.GetPostsWithFiltersRepositoryAsync(filters.Page, filters.PerPage, filters.SortBy, filters.Search);
+        var posts = response.Item1;
+        filters.PageCount = response.Item2;
         List<PostDTO> mappedPosts = new();
         foreach (var post in posts)
         {

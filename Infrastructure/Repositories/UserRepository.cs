@@ -17,18 +17,28 @@ public class UserRepository : IUserRepository
         user.Posts ??= new List<Post>();
         return user;
     }
-
-    public async Task<List<User>> GetUsersRepositoryAsync(int page, int perPage, string sortBy, string search)
+    public async Task<List<User>> GetUsersWithoutFiltersRepositoryAsync()
     {
+        var users = await _context.Users.Include(x => x.Posts).ToListAsync();
+        return users;
+    }
+    public async Task<(List<User>, int)> GetUsersWithFiltersRepositoryAsync(int page, int perPage, string sortBy, string search)
+    {
+        var totalItems = await _context.Users
+            .Where(x => x.FirstName.Contains(search) || x.LastName.Contains(search))
+            .CountAsync();
+
         var users = await _context.Users.Include(x => x.Posts)
             .Where(x => x.FirstName.Contains(search) || x.LastName.Contains(search))
             .OrderBy(x => x[sortBy])
             .Skip((page - 1) * perPage)
             .Take(perPage)
             .ToListAsync();
-        return users;
-    }
 
+        var totalPages = (int)Math.Ceiling((double)totalItems / perPage);
+
+        return (users, totalPages);
+    }
     public async Task CreateUserRepositoryAsync(User user)
     {
         await _context.Users.AddAsync(user);

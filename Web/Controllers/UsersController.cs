@@ -13,7 +13,9 @@ public class UsersController : BaseController
         _userService = userService;
     }
     [HttpGet]
-    public async Task<ActionResult> GetUsersAsync([FromQuery] FiltersDTO filters) => Ok(await _userService.GetUsersServiceAsync(filters));
+    public async Task<ActionResult> GetUsersWithoutFiltersAsync() => Ok(await _userService.GetUsersWithoutFiltersServiceAsync());
+    [HttpGet("/api/[controller]Filters")]
+    public async Task<ActionResult> GetUsersWithFiltersAsync([FromQuery] FiltersDTO filters) => Ok(await _userService.GetUsersWithFiltersServiceAsync(filters));
 
     [HttpGet("/api/[controller]/{id}")]
     public async Task<ActionResult> GetUserByIdAsync(Guid id) => Ok(await _userService.GetUserByIdServiceAsync(id));

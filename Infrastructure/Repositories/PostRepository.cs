@@ -16,16 +16,27 @@ public class PostRepository : IPostRepository
         var post = await _context.Posts.Include(x => x.User).SingleOrDefaultAsync(x => x.Id == id);
         return post;
     }
-
-    public async Task<List<Post>> GetPostsRepositoryAsync(int page, int perPage, string sortBy, string search)
+    public async Task<List<Post>> GetPostsWithoutFiltersRepositoryAsync()
     {
-        var posts = await _context.Posts.Include(x => x.User)
-           .Where(x => x.Body.Contains(search) || x.Title.Contains(search))
-           .OrderBy(x => x[sortBy])
-           .Skip((page - 1) * perPage)
-           .Take(perPage)
-           .ToListAsync();
+        var posts = await _context.Posts.Include(x => x.User).ToListAsync();
         return posts;
+    }
+    public async Task<(List<Post>, int)> GetPostsWithFiltersRepositoryAsync(int page, int perPage, string sortBy, string search)
+    {
+        var totalItems = await _context.Posts
+            .Where(x => x.Title.Contains(search) || x.Body.Contains(search))
+            .CountAsync();
+
+        var posts = await _context.Posts.Include(x => x.User)
+            .Where(x => x.Title.Contains(search) || x.Body.Contains(search))
+            .OrderBy(x => x[sortBy])
+            .Skip((page - 1) * perPage)
+            .Take(perPage)
+            .ToListAsync();
+
+        var totalPages = (int)Math.Ceiling((double)totalItems / perPage);
+
+        return (posts, totalPages);
     }
     public async Task CreatePostRepositoryAsync(Post post)
     {
