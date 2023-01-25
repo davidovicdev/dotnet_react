@@ -84,12 +84,6 @@ public class UserService : IUserService
                     Id = post.Id,
                     Title = post.Title,
                     Body = post.Body,
-                    User = new UserDTO()
-                    {
-                        Id = user.Id,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                    },
                 });
             }
             users.Add(new UserDTO()

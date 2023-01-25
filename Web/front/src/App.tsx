@@ -1,40 +1,26 @@
-import { Button } from "@mui/material";
-import { useState } from "react";
+import { Grid } from "@mui/material";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import PostsDashboard from "./components/posts/PostsDashboard";
 import UsersDashboard from "./components/users/UsersDashboard";
 
 function App() {
-  const [showDashboard, setShowDashboard] = useState("");
   return (
-    <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-around",
-          margin: "30px auto",
-          width: "50%",
-        }}
-      >
-        <Button
-          variant="contained"
-          onClick={() => {
-            setShowDashboard("Users");
-          }}
-        >
-          Users
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => {
-            setShowDashboard("Posts");
-          }}
-        >
-          Posts
-        </Button>
-      </div>
-      {showDashboard === "Users" && <UsersDashboard />}
-      {showDashboard === "Posts" && <PostsDashboard />}
-    </>
+    <Grid container>
+      <ToastContainer />
+      <Grid item xs={5.99} style={{ height: "100vh" }}>
+        <UsersDashboard />
+      </Grid>
+      <Grid
+        item
+        xs={0.01}
+        style={{ height: "100vh", backgroundColor: "#ccc", marginTop: "1em" }}
+      ></Grid>
+
+      <Grid item xs={5.99} style={{ height: "100vh" }}>
+        <PostsDashboard />
+      </Grid>
+    </Grid>
   );
 }
 
