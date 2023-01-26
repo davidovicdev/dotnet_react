@@ -13,11 +13,15 @@ interface Props {
   posts: IGetPost[];
   setIsUpdatedPost: React.Dispatch<React.SetStateAction<boolean>>;
   setIsDeletedPost: React.Dispatch<React.SetStateAction<boolean>>;
+  currentPage: number;
+  perPage: number;
 }
 export default function PostsTable({
   posts,
   setIsDeletedPost,
   setIsUpdatedPost,
+  currentPage,
+  perPage,
 }: Props) {
   if (posts.length === 0)
     return (
@@ -44,7 +48,7 @@ export default function PostsTable({
               <PostTableRow
                 key={post.id}
                 post={post}
-                index={index}
+                index={perPage * currentPage + index - perPage}
                 setIsDeletedPost={setIsDeletedPost}
                 setIsUpdatedPost={setIsUpdatedPost}
               />

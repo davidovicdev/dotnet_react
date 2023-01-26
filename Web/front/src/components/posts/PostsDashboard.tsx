@@ -61,6 +61,8 @@ export default function PostsDashboard() {
       </div>
       <PostsTable
         posts={posts}
+        currentPage={filters.page}
+        perPage={filters.perPage}
         setIsDeletedPost={setIsDeletedPost}
         setIsUpdatedPost={setIsUpdatedPost}
       />

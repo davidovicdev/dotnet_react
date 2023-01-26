@@ -23,6 +23,7 @@ export default function UsersDashboard() {
   const [isUpdatedUser, setIsUpdatedUser] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(1);
   const [filters, setFilters] = useState<IFilters>(DEFAULT_FILTERS);
+
   useEffect(() => {
     setIsUpdatedUser(false);
     setIsDeletedUser(false);
